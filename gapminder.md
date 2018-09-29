@@ -113,3 +113,38 @@ cont_lifeExp %>%
 ![](gapminder_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ### Report the absolute and/or relative abundance of countries with low life expectancy over time by continent: Compute some measure of worldwide life expectancy – you decide – a mean or median or some other quantile or perhaps your current age. Then determine how many countries on each continent have a life expectancy less than this benchmark, for each year.
+
+I decided to use 50 as the cutoff of low life expectancy.
+
+``` r
+data_lowLifeExp = gapminder %>% 
+  mutate(low_age = if_else(lifeExp < 50, 1, 0)) %>% 
+  group_by(year, continent) %>% 
+  summarize(propLow = sum(low_age)/n_distinct(country))
+
+data_lowLifeExp
+```
+
+    ## # A tibble: 60 x 3
+    ## # Groups:   year [?]
+    ##     year continent propLow
+    ##    <int> <fct>       <dbl>
+    ##  1  1952 Africa     0.962 
+    ##  2  1952 Americas   0.36  
+    ##  3  1952 Asia       0.667 
+    ##  4  1952 Europe     0.0333
+    ##  5  1952 Oceania    0     
+    ##  6  1957 Africa     0.942 
+    ##  7  1957 Americas   0.32  
+    ##  8  1957 Asia       0.545 
+    ##  9  1957 Europe     0.0333
+    ## 10  1957 Oceania    0     
+    ## # ... with 50 more rows
+
+``` r
+data_lowLifeExp %>% 
+  ggplot(aes(year, propLow, color=continent)) + 
+  geom_point()
+```
+
+![](gapminder_files/figure-markdown_github/unnamed-chunk-10-1.png)
