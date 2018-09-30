@@ -73,7 +73,6 @@ cont_lifeExp = gapminder %>%
   summarize(totalYears = sum(wt_mean), totalPop = sum(as.double(pop))) %>% 
   mutate(contLifeExp = totalYears/totalPop) %>% 
   arrange(continent, year)
-cont_lifeExp 
 ```
 
 ```{r}
@@ -92,8 +91,6 @@ data_lowLifeExp = gapminder %>%
   mutate(low_age = if_else(lifeExp < 50, 1, 0)) %>% 
   group_by(year, continent) %>% 
   summarize(propLow = sum(low_age)/n_distinct(country))
-
-data_lowLifeExp
 ```
 
 ```{r}
@@ -104,7 +101,12 @@ data_lowLifeExp %>%
 
 Find countries with interesting stories. Open-ended and, therefore, hard. Promising but unsuccessful attempts are encouraged. This will generate interesting questions to follow up on in class.
 
+
+Here, we are finding the countries with an overall population drop. This is a rare situation and it will be interesting to investigate further into these specific causes. 
 ```{r}
-gapminder %>% 
-  filter(country=='United States')
+pop_drop = gapminder %>% 
+  group_by(country) %>% 
+  mutate(popdiff = pop - lag(pop)) %>% 
+  filter(popdiff < 0)
+knitr::kable(pop_drop)
 ```
